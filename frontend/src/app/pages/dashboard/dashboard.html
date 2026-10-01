@@ -1,0 +1,178 @@
+<div class="dashboard-page">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div>
+      <h1>Dashboard</h1>
+      <p>Real-time overview of your Retail Inventory Management System</p>
+    </div>
+
+    <button class="refresh-btn" (click)="loadDashboard()" [disabled]="loading">
+      <span *ngIf="!loading">↻ Refresh</span>
+      <span *ngIf="loading">⏳ Refreshing...</span>
+    </button>
+  </div>
+
+
+  <!-- GLOBAL LOADING STATE -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner">⏳</div>
+    <h3>Loading Dashboard Metrics...</h3>
+    <p>Retrieving real-time data from backend APIs</p>
+  </div>
+
+
+  <!-- DASHBOARD CONTENT (WHEN NOT LOADING) -->
+  <div *ngIf="!loading">
+
+    <!-- STAT CARDS (CLICKABLE) -->
+    <div class="stats-grid">
+
+      <div class="stat-card clickable" (click)="navigateTo('/products')" title="View Products">
+        <div class="stat-icon products-icon">📦</div>
+        <div class="stat-info">
+          <span>Total Products</span>
+          <h2>{{ productCount }}</h2>
+        </div>
+      </div>
+
+      <div class="stat-card clickable" (click)="navigateTo('/categories')" title="View Categories">
+        <div class="stat-icon categories-icon">▦</div>
+        <div class="stat-info">
+          <span>Categories</span>
+          <h2>{{ categoryCount }}</h2>
+        </div>
+      </div>
+
+      <div class="stat-card clickable" (click)="navigateTo('/suppliers')" title="View Suppliers">
+        <div class="stat-icon suppliers-icon">🏢</div>
+        <div class="stat-info">
+          <span>Suppliers</span>
+          <h2>{{ supplierCount }}</h2>
+        </div>
+      </div>
+
+      <div class="stat-card clickable" (click)="navigateTo('/customers')" title="View Customers">
+        <div class="stat-icon customers-icon">👥</div>
+        <div class="stat-info">
+          <span>Customers</span>
+          <h2>{{ customerCount }}</h2>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- MAIN DASHBOARD GRID -->
+    <div class="dashboard-grid">
+
+      <!-- 1. LOW STOCK PRODUCTS -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div>
+            <h3>Low Stock Products</h3>
+            <p>Items with quantity ≤ 5 requiring restock</p>
+          </div>
+          <a routerLink="/products">View Products</a>
+        </div>
+
+        <div class="card-content">
+          <div *ngIf="lowStockProducts.length === 0" class="empty-state success">
+            <div class="empty-icon">✓</div>
+            <strong>All Products In Stock</strong>
+            <span>No products are currently at or below low stock threshold (≤ 5).</span>
+          </div>
+
+          <div *ngIf="lowStockProducts.length > 0" class="item-list">
+            <div *ngFor="let product of lowStockProducts" class="list-item clickable" (click)="navigateTo('/products')">
+              <div class="warning-icon">!</div>
+              <div class="item-details">
+                <strong>{{ product.name }}</strong>
+                <span>Category: {{ product.category }}</span>
+              </div>
+              <div class="stock-warning">
+                {{ product.quantity }} left
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- 2. RECENT SALES ORDERS -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div>
+            <h3>Recent Sales Orders</h3>
+            <p>Latest retail order transactions</p>
+          </div>
+          <a routerLink="/orders">View Orders</a>
+        </div>
+
+        <div class="card-content">
+          <div *ngIf="recentOrders.length === 0" class="empty-state">
+            <div class="empty-icon">📋</div>
+            <strong>No Orders Recorded</strong>
+            <span>Create your first sales order in the Orders module.</span>
+          </div>
+
+          <div *ngIf="recentOrders.length > 0" class="item-list">
+            <div *ngFor="let order of recentOrders" class="list-item clickable" (click)="navigateTo('/orders')">
+              <div class="order-avatar">
+                #{{ order.id }}
+              </div>
+              <div class="item-details">
+                <strong>{{ order.customer?.name || 'Customer Order' }}</strong>
+                <span>{{ order.orderDate ? (order.orderDate | date:'shortDate') : 'Recent Order' }}</span>
+              </div>
+              <div class="item-right">
+                <strong class="amount">${{ order.totalAmount | number:'1.2-2' }}</strong>
+                <span class="status-badge" [ngClass]="(order.status || 'PENDING').toLowerCase()">
+                  {{ order.status || 'PENDING' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- 3. RECENT STOCK MOVEMENTS -->
+      <div class="dashboard-card full-width">
+        <div class="card-header">
+          <div>
+            <h3>Recent Stock Movements</h3>
+            <p>Latest inventory stock additions and dispatches</p>
+          </div>
+          <a routerLink="/stock-movements">View All Movements</a>
+        </div>
+
+        <div class="card-content">
+          <div *ngIf="recentMovements.length === 0" class="empty-state">
+            <div class="empty-icon">↕</div>
+            <strong>No Stock Movements Recorded</strong>
+            <span>Add stock movements to track inventory flow.</span>
+          </div>
+
+          <div *ngIf="recentMovements.length > 0" class="item-list">
+            <div *ngFor="let movement of recentMovements" class="list-item clickable" (click)="navigateTo('/stock-movements')">
+              <span class="type-pill" [ngClass]="movement.type.toLowerCase()">
+                {{ movement.type }}
+              </span>
+              <div class="item-details">
+                <strong>{{ movement.product?.name || 'Product ID #' + movement.product?.id }}</strong>
+                <span>Reason: {{ movement.reason || 'Inventory Adjustment' }}</span>
+              </div>
+              <div class="movement-qty" [ngClass]="movement.type.toLowerCase()">
+                {{ movement.type === 'IN' ? '+' : '-' }}{{ movement.quantity }} units
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

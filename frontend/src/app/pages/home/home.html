@@ -1,0 +1,567 @@
+<div class="landing-page">
+
+  <!-- 1. NAVBAR -->
+  <header class="landing-navbar">
+    <div class="nav-container">
+
+      <div class="brand-logo" (click)="scrollToSection('hero')">
+        <div class="logo-icon">R</div>
+        <div class="brand-text">
+          <span class="brand-name">RIMS</span>
+          <span class="brand-sub">Retail Inventory System</span>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a (click)="scrollToSection('hero')">Home</a>
+        <a (click)="scrollToSection('features')">Features</a>
+        <a (click)="scrollToSection('modules')">How It Works</a>
+        <a (click)="scrollToSection('about')">About</a>
+        <a (click)="scrollToSection('contact')">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <ng-container *ngIf="!isLoggedIn; else loggedInNav">
+          <a routerLink="/login" class="login-btn">Sign In</a>
+          <a routerLink="/register" class="cta-nav-btn">Get Started</a>
+        </ng-container>
+
+        <ng-template #loggedInNav>
+          <a routerLink="/dashboard" class="dashboard-nav-btn">Go to Dashboard →</a>
+        </ng-template>
+      </div>
+
+    </div>
+  </header>
+
+
+  <!-- 2. HERO SECTION -->
+  <section id="hero" class="hero-section">
+    <div class="hero-container">
+
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>Smart Retail Inventory Management</span>
+        </div>
+
+        <h1 class="hero-title">
+          Retail Inventory Management <span class="gradient-text">Made Simple</span>
+        </h1>
+
+        <p class="hero-description">
+          Streamline your retail operations from product cataloging to stock movements, customer orders, and supplier management — all from one centralized platform.
+        </p>
+
+        <div class="hero-cta-group">
+          <ng-container *ngIf="!isLoggedIn; else heroLoggedIn">
+            <a routerLink="/register" class="btn-primary">
+              Get Started Free <span>→</span>
+            </a>
+            <a (click)="scrollToSection('features')" class="btn-secondary">
+              Explore Features
+            </a>
+          </ng-container>
+
+          <ng-template #heroLoggedIn>
+            <a routerLink="/dashboard" class="btn-primary">
+              Open Dashboard <span>→</span>
+            </a>
+            <a (click)="scrollToSection('features')" class="btn-secondary">
+              Explore System Features
+            </a>
+          </ng-template>
+        </div>
+
+        <div class="hero-features-list">
+          <div class="feature-item">
+            <span class="check-icon">✓</span> Real-Time Stock Validation
+          </div>
+          <div class="feature-item">
+            <span class="check-icon">✓</span> JWT Secure Access
+          </div>
+          <div class="feature-item">
+            <span class="check-icon">✓</span> Integrated Sales Orders
+          </div>
+        </div>
+      </div>
+
+      <!-- HERO GRAPHICAL VISUAL -->
+      <div class="hero-visual">
+        <div class="visual-card-wrapper">
+
+          <div class="mockup-header">
+            <div class="dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <span class="mockup-title">RIMS Live Management Console</span>
+          </div>
+
+          <div class="mockup-body">
+            <div class="preview-metrics">
+              <div class="preview-metric">
+                <span class="m-title">Total Products</span>
+                <span class="m-val text-indigo">2,480</span>
+                <span class="m-sub">Categorized Inventory</span>
+              </div>
+
+              <div class="preview-metric">
+                <span class="m-title">Stock Status</span>
+                <span class="m-val text-emerald">Optimal</span>
+                <span class="m-sub">Auto Stock Validation</span>
+              </div>
+            </div>
+
+            <div class="preview-activity">
+              <div class="act-header">Recent System Operations</div>
+
+              <div class="act-row">
+                <span class="act-icon in">IN</span>
+                <div class="act-info">
+                  <strong>Stock IN Received</strong>
+                  <small>Supplier: TechDistributors Ltd</small>
+                </div>
+                <span class="act-qty text-emerald">+50 units</span>
+              </div>
+
+              <div class="act-row">
+                <span class="act-icon out">OUT</span>
+                <div class="act-info">
+                  <strong>Sales Order Dispatch</strong>
+                  <small>Customer Order #1042</small>
+                </div>
+                <span class="act-qty text-rose">-5 units</span>
+              </div>
+
+              <div class="act-row">
+                <span class="act-icon warn">ALERT</span>
+                <div class="act-info">
+                  <strong>Low Stock Monitoring</strong>
+                  <small>Quantity ≤ 5 threshold trigger</small>
+                </div>
+                <span class="act-qty text-amber">Active</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- FLOATING BADGES -->
+          <div class="floating-badge badge-1">
+            <span class="badge-icon">⚡</span>
+            <div>
+              <strong>Instant Processing</strong>
+              <small>Automated Inventory Sync</small>
+            </div>
+          </div>
+
+          <div class="floating-badge badge-2">
+            <span class="badge-icon">🔒</span>
+            <div>
+              <strong>BCrypt & JWT</strong>
+              <small>Enterprise Grade Security</small>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- 3. HIGHLIGHT SECTION -->
+  <section class="highlights-section">
+    <div class="section-container">
+      <div class="highlights-grid">
+
+        <div class="highlight-card">
+          <div class="h-icon bg-blue">📦</div>
+          <h3>Product Cataloging</h3>
+          <p>Organize products into structured categories with instant search and threshold monitoring.</p>
+        </div>
+
+        <div class="highlight-card">
+          <div class="h-icon bg-green">↕</div>
+          <h3>Real-Time Stock Movements</h3>
+          <p>Track Stock IN restocks and Stock OUT sales with automated quantity validation.</p>
+        </div>
+
+        <div class="highlight-card">
+          <div class="h-icon bg-purple">▤</div>
+          <h3>Sales Order Processing</h3>
+          <p>Create sales orders, link registered customers, and automate line-item totals.</p>
+        </div>
+
+        <div class="highlight-card">
+          <div class="h-icon bg-amber">👥</div>
+          <h3>Customer & Supplier Directory</h3>
+          <p>Maintain centralized vendor details, retail customer contact records, and sales history.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 4. KEY FEATURES SECTION -->
+  <section id="features" class="features-section">
+    <div class="section-container">
+
+      <div class="section-header">
+        <span class="section-tag">CORE CAPABILITIES</span>
+        <h2>Powerful Features Built for Retail Inventory</h2>
+        <p>Everything you need to manage stock, sales orders, suppliers, and customer relationships in one place.</p>
+      </div>
+
+      <div class="features-grid">
+
+        <div class="feature-card">
+          <div class="f-icon">📦</div>
+          <h3>Product Management</h3>
+          <p>Create, view, search, and delete retail inventory products with real-time quantity tracking.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="f-icon">▦</div>
+          <h3>Category Organization</h3>
+          <p>Group items into custom categories (Electronics, Apparel, Groceries) for effortless browsing.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="f-icon">🏢</div>
+          <h3>Supplier Management</h3>
+          <p>Store supplier directory records, company names, contact numbers, and vendor addresses.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="f-icon">👥</div>
+          <h3>Customer Directory</h3>
+          <p>Maintain customer profiles and contact data linked directly to sales orders.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="f-icon">↕</div>
+          <h3>Stock Movement Control</h3>
+          <p>Record stock IN and OUT operations with database transaction integrity and validation.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="f-icon">▤</div>
+          <h3>Sales Order Processing</h3>
+          <p>Generate sales orders, assign registered retail customers, and monitor fulfillment status.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="f-icon">☷</div>
+          <h3>Order Line Items</h3>
+          <p>Add specific product quantities to orders with automated unit price and total price calculations.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="f-icon">🔒</div>
+          <h3>Secure JWT Authentication</h3>
+          <p>Protect business data with BCrypt password hashing and JWT token authorization headers.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- 5. WHY CHOOSE OUR SYSTEM -->
+  <section id="about" class="why-section">
+    <div class="section-container">
+      <div class="why-grid">
+
+        <div class="why-content">
+          <span class="section-tag">BUILT FOR RETAIL</span>
+          <h2>Built for Smarter Retail Management</h2>
+          <p>
+            RIMS eliminates stock discrepancies, spreadsheet confusion, and order fulfillment errors by unifying your inventory operations into a single, synchronized web interface.
+          </p>
+
+          <ul class="why-list">
+            <li>
+              <span class="check-bullet">✓</span>
+              <div>
+                <strong>Centralized Inventory Management</strong>
+                <p>Monitor your entire retail catalog from a single responsive web console.</p>
+              </div>
+            </li>
+
+            <li>
+              <span class="check-bullet">✓</span>
+              <div>
+                <strong>Real-Time Stock Updates & Validation</strong>
+                <p>Prevent out-of-stock orders with automated quantity updates on stock movements.</p>
+              </div>
+            </li>
+
+            <li>
+              <span class="check-bullet">✓</span>
+              <div>
+                <strong>Integrated Sales Order Workflow</strong>
+                <p>Connect orders directly to customers and calculate line-item totals instantly.</p>
+              </div>
+            </li>
+
+            <li>
+              <span class="check-bullet">✓</span>
+              <div>
+                <strong>Secure Architecture</strong>
+                <p>Spring Boot backend security powered by BCrypt password protection and JWT tokens.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- WHY RIGHT ILLUSTRATION GRAPHIC -->
+        <div class="why-visual">
+          <div class="analytics-card">
+            <div class="card-title">System Architecture Overview</div>
+            
+            <div class="stack-box">
+              <div class="stack-item">
+                <span class="st-icon">🅰</span>
+                <div>
+                  <strong>Angular Frontend</strong>
+                  <small>Standalone Components, RxJS, Interceptors</small>
+                </div>
+              </div>
+
+              <div class="stack-arrow">↓ REST API (JWT Header)</div>
+
+              <div class="stack-item">
+                <span class="st-icon">🍃</span>
+                <div>
+                  <strong>Spring Boot Backend</strong>
+                  <small>Spring Security, Transactional Services</small>
+                </div>
+              </div>
+
+              <div class="stack-arrow">↓ JPA / Hibernate</div>
+
+              <div class="stack-item">
+                <span class="st-icon">🐬</span>
+                <div>
+                  <strong>MySQL Database</strong>
+                  <small>Normalized Relational Persistence</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="analytics-footer">
+              <span>⚡ Reliable & Scalable Architecture</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 6. HOW IT WORKS -->
+  <section id="modules" class="how-section">
+    <div class="section-container">
+
+      <div class="section-header">
+        <span class="section-tag">STREAMLINED WORKFLOW</span>
+        <h2>How RIMS Operates</h2>
+        <p>A simple 4-step workflow to digitize and automate retail management.</p>
+      </div>
+
+      <div class="steps-grid">
+
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-icon">📦</div>
+          <h3>Manage Products</h3>
+          <p>Add products, set categories, descriptions, and initial stock quantities.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-icon">↕</div>
+          <h3>Track Inventory</h3>
+          <p>Record stock IN for shipments and stock OUT for sales with validation.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-icon">▤</div>
+          <h3>Process Orders</h3>
+          <p>Create customer sales orders, attach line items, and set fulfillment status.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-icon">📊</div>
+          <h3>Monitor Metrics</h3>
+          <p>View total products, low-stock alerts, and recent transactions on the dashboard.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- 7. SYSTEM PREVIEW -->
+  <section class="preview-section">
+    <div class="section-container">
+
+      <div class="section-header">
+        <span class="section-tag">SYSTEM IN ACTION</span>
+        <h2>Explore Our Core Modules</h2>
+        <p>Designed for fast data entry, clear data visibility, and effortless management.</p>
+      </div>
+
+      <div class="previews-grid">
+
+        <div class="preview-card">
+          <div class="preview-img-container bg-grad-1">
+            <div class="mini-ui">
+              <div class="mini-top">Dashboard Overview</div>
+              <div class="mini-grid">
+                <div class="mini-box">Products: 24</div>
+                <div class="mini-box">Orders: 12</div>
+                <div class="mini-box">Suppliers: 8</div>
+                <div class="mini-box">Low Stock: 2</div>
+              </div>
+            </div>
+          </div>
+          <div class="preview-card-body">
+            <h3>Interactive Dashboard</h3>
+            <p>Real-time statistical counters, low-stock alerts, and quick navigation links.</p>
+          </div>
+        </div>
+
+        <div class="preview-card">
+          <div class="preview-img-container bg-grad-2">
+            <div class="mini-ui">
+              <div class="mini-top">Product Inventory Grid</div>
+              <div class="mini-list">
+                <div class="mini-row">Laptop Pro <span>25 units</span></div>
+                <div class="mini-row">Wireless Mouse <span>4 units (Low)</span></div>
+                <div class="mini-row">HD Monitor <span>18 units</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="preview-card-body">
+            <h3>Product Management</h3>
+            <p>Full catalog listing with instant search, category tagging, and stock badges.</p>
+          </div>
+        </div>
+
+        <div class="preview-card">
+          <div class="preview-img-container bg-grad-3">
+            <div class="mini-ui">
+              <div class="mini-top">Sales Order Console</div>
+              <div class="mini-list">
+                <div class="mini-row">Order #101 - Customer Alice <span>$149.99</span></div>
+                <div class="mini-row">Order #102 - Customer Bob <span>$89.50</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="preview-card-body">
+            <h3>Sales Orders & Line Items</h3>
+            <p>Generate sales orders, assign customer profiles, and automate total price calculations.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- 8. CALL TO ACTION -->
+  <section class="cta-section">
+    <div class="section-container">
+      <div class="cta-box">
+        <h2>Ready to simplify your inventory management?</h2>
+        <p>Manage products, stock movements, customers, suppliers, and sales orders from one unified platform.</p>
+
+        <div class="cta-buttons">
+          <ng-container *ngIf="!isLoggedIn; else ctaLoggedIn">
+            <a routerLink="/register" class="btn-cta-primary">
+              Get Started Now
+            </a>
+            <a routerLink="/login" class="btn-cta-secondary">
+              Sign In to Account
+            </a>
+          </ng-container>
+
+          <ng-template #ctaLoggedIn>
+            <a routerLink="/dashboard" class="btn-cta-primary">
+              Access Your Dashboard
+            </a>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 9. FOOTER -->
+  <footer id="contact" class="landing-footer">
+    <div class="section-container">
+      <div class="footer-grid">
+
+        <div class="footer-brand">
+          <div class="brand-logo">
+            <div class="logo-icon">R</div>
+            <div class="brand-text">
+              <span class="brand-name">RIMS</span>
+              <span class="brand-sub">Retail Inventory Management</span>
+            </div>
+          </div>
+          <p>
+            Next-generation Retail Inventory Management System built with Angular, Spring Boot, MySQL, and JWT Security.
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a (click)="scrollToSection('hero')">Home</a></li>
+            <li><a (click)="scrollToSection('features')">Features</a></li>
+            <li><a (click)="scrollToSection('modules')">How It Works</a></li>
+            <li><a (click)="scrollToSection('about')">About System</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>System Modules</h4>
+          <ul>
+            <li><a routerLink="/login">Products Catalog</a></li>
+            <li><a routerLink="/login">Categories</a></li>
+            <li><a routerLink="/login">Suppliers Directory</a></li>
+            <li><a routerLink="/login">Sales Orders</a></li>
+            <li><a routerLink="/login">Stock Movements</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>System Tech Stack</h4>
+          <ul>
+            <li><span>Frontend: Angular 18+</span></li>
+            <li><span>Backend: Spring Boot 3+</span></li>
+            <li><span>Database: MySQL</span></li>
+            <li><span>Security: BCrypt & JWT</span></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Retail Inventory Management System (RIMS). All rights reserved.</p>
+        <p>Built for modern retail operations.</p>
+      </div>
+    </div>
+  </footer>
+
+</div>

@@ -1,0 +1,438 @@
+<div class="suppliers-page">
+
+  <!-- PAGE HEADER -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>Suppliers</h1>
+
+      <p>
+        Manage your suppliers and vendor information
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="add-btn"
+      (click)="openForm()"
+    >
+      + Add Supplier
+    </button>
+
+  </div>
+
+
+  <!-- SEARCH -->
+
+  <div class="toolbar">
+
+    <div class="search-box">
+
+      <span>🔍</span>
+
+      <input
+        type="text"
+        placeholder="Search suppliers..."
+        [(ngModel)]="searchText"
+      />
+
+    </div>
+
+
+    <div class="supplier-count">
+
+      {{ filteredSuppliers.length }}
+
+      {{
+        filteredSuppliers.length === 1
+          ? 'supplier'
+          : 'suppliers'
+      }}
+
+    </div>
+
+  </div>
+
+
+  <!-- SUPPLIER TABLE -->
+
+  <div class="table-card">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>ID</th>
+
+          <th>Supplier</th>
+
+          <th>Company</th>
+
+          <th>Email</th>
+
+          <th>Phone</th>
+
+          <th>Address</th>
+
+          <th>Actions</th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        @if (loading) {
+
+          <tr>
+
+            <td
+              colspan="7"
+              class="empty-cell"
+            >
+
+              <div class="loading-icon">
+                ⏳
+              </div>
+
+              <strong>
+                Loading suppliers...
+              </strong>
+
+              <span>
+                Please wait while suppliers are loaded.
+              </span>
+
+            </td>
+
+          </tr>
+
+        }
+
+
+        @else if (filteredSuppliers.length === 0) {
+
+          <tr>
+
+            <td
+              colspan="7"
+              class="empty-cell"
+            >
+
+              <div class="empty-icon">
+                🏢
+              </div>
+
+              <strong>
+                No suppliers found
+              </strong>
+
+              <span>
+                Add your first supplier to get started.
+              </span>
+
+            </td>
+
+          </tr>
+
+        }
+
+
+        @else {
+
+          @for (
+            supplier of filteredSuppliers;
+            track supplier.id
+          ) {
+
+            <tr>
+
+              <!-- ID -->
+
+              <td>
+
+                <span class="id-badge">
+                  #{{ supplier.id }}
+                </span>
+
+              </td>
+
+
+              <!-- SUPPLIER -->
+
+              <td>
+
+                <div class="supplier-name">
+
+                  <div class="supplier-avatar">
+                    {{ supplier.name.charAt(0).toUpperCase() }}
+                  </div>
+
+                  <strong>
+                    {{ supplier.name }}
+                  </strong>
+
+                </div>
+
+              </td>
+
+
+              <!-- COMPANY -->
+
+              <td>
+
+                <span class="company-name">
+                  {{ supplier.companyName }}
+                </span>
+
+              </td>
+
+
+              <!-- EMAIL -->
+
+              <td>
+
+                <span class="email">
+                  {{ supplier.email || '—' }}
+                </span>
+
+              </td>
+
+
+              <!-- PHONE -->
+
+              <td>
+
+                <span class="phone">
+                  {{ supplier.phone || '—' }}
+                </span>
+
+              </td>
+
+
+              <!-- ADDRESS -->
+
+              <td class="address">
+
+                {{ supplier.address || '—' }}
+
+              </td>
+
+
+              <!-- ACTION -->
+
+              <td>
+
+                <button
+                  type="button"
+                  class="delete-btn"
+                  (click)="deleteSupplier(supplier.id)"
+                >
+                  Delete
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- ADD SUPPLIER MODAL -->
+
+  @if (showForm) {
+
+    <div
+      class="modal-overlay"
+      (click)="closeForm()"
+    >
+
+      <div
+        class="modal"
+        (click)="$event.stopPropagation()"
+      >
+
+        <!-- MODAL HEADER -->
+
+        <div class="modal-header">
+
+          <div>
+
+            <h2>
+              Add New Supplier
+            </h2>
+
+            <p>
+              Enter supplier information
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="close-btn"
+            (click)="closeForm()"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <form
+          #supplierForm="ngForm"
+          (ngSubmit)="addSupplier()"
+        >
+
+          <!-- NAME -->
+
+          <div class="form-group">
+
+            <label>
+
+              Supplier Name
+
+              <span>*</span>
+
+            </label>
+
+            <input
+              type="text"
+              name="name"
+              [(ngModel)]="newSupplier.name"
+              placeholder="Enter supplier name"
+              required
+            />
+
+          </div>
+
+
+          <!-- COMPANY -->
+
+          <div class="form-group">
+
+            <label>
+
+              Company Name
+
+              <span>*</span>
+
+            </label>
+
+            <input
+              type="text"
+              name="companyName"
+              [(ngModel)]="newSupplier.companyName"
+              placeholder="Enter company name"
+              required
+            />
+
+          </div>
+
+
+          <!-- EMAIL + PHONE -->
+
+          <div class="form-row">
+
+            <div class="form-group">
+
+              <label>
+                Email
+              </label>
+
+              <input
+                type="email"
+                name="email"
+                [(ngModel)]="newSupplier.email"
+                placeholder="supplier@example.com"
+              />
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Phone
+              </label>
+
+              <input
+                type="tel"
+                name="phone"
+                [(ngModel)]="newSupplier.phone"
+                placeholder="9876543210"
+              />
+
+            </div>
+
+          </div>
+
+
+          <!-- ADDRESS -->
+
+          <div class="form-group">
+
+            <label>
+              Address
+            </label>
+
+            <textarea
+              name="address"
+              [(ngModel)]="newSupplier.address"
+              placeholder="Enter supplier address"
+              rows="3"
+            ></textarea>
+
+          </div>
+
+
+          <!-- BUTTONS -->
+
+          <div class="form-actions">
+
+            <button
+              type="button"
+              class="cancel-btn"
+              (click)="closeForm()"
+            >
+              Cancel
+            </button>
+
+
+            <button
+              type="submit"
+              class="save-btn"
+              [disabled]="supplierForm.invalid"
+            >
+              Add Supplier
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

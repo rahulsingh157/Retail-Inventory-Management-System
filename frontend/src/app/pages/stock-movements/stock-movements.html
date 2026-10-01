@@ -1,0 +1,546 @@
+<div class="stock-page">
+
+  <!-- HEADER -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>Stock Movements</h1>
+
+      <p>
+        Track inventory stock in and stock out movements
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="add-btn"
+      (click)="openForm()"
+    >
+      + Add Movement
+    </button>
+
+  </div>
+
+
+  <!-- TOOLBAR -->
+
+  <div class="toolbar">
+
+    <div class="search-box">
+
+      <span>🔍</span>
+
+      <input
+        type="text"
+        placeholder="Search movements..."
+        [(ngModel)]="searchText"
+      />
+
+    </div>
+
+
+    <div class="movement-count">
+
+      {{ filteredMovements.length }}
+
+      {{
+        filteredMovements.length === 1
+          ? 'movement'
+          : 'movements'
+      }}
+
+    </div>
+
+  </div>
+
+
+  <!-- TABLE -->
+
+  <div class="table-card">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>ID</th>
+
+          <th>Product</th>
+
+          <th>Type</th>
+
+          <th>Quantity</th>
+
+          <th>Reason</th>
+
+          <th>Date</th>
+
+          <th>Actions</th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        @if (loading) {
+
+          <tr>
+
+            <td
+              colspan="7"
+              class="empty-cell"
+            >
+
+              <div class="loading-icon">
+                ⏳
+              </div>
+
+              <strong>
+                Loading stock movements...
+              </strong>
+
+              <span>
+                Please wait.
+              </span>
+
+            </td>
+
+          </tr>
+
+        }
+
+
+        @else if (filteredMovements.length === 0) {
+
+          <tr>
+
+            <td
+              colspan="7"
+              class="empty-cell"
+            >
+
+              <div class="empty-icon">
+                📊
+              </div>
+
+              <strong>
+                No stock movements found
+              </strong>
+
+              <span>
+                Add your first stock movement to get started.
+              </span>
+
+            </td>
+
+          </tr>
+
+        }
+
+
+        @else {
+
+          @for (
+            movement of filteredMovements;
+            track movement.id
+          ) {
+
+            <tr>
+
+              <!-- ID -->
+
+              <td>
+
+                <span class="id-badge">
+                  #{{ movement.id }}
+                </span>
+
+              </td>
+
+
+              <!-- PRODUCT -->
+
+              <td>
+
+                <div class="product-name">
+
+                  <div class="product-avatar">
+                    📦
+                  </div>
+
+                  <strong>
+                    {{
+                      getProductName(
+                        movement.product?.id
+                      )
+                    }}
+                  </strong>
+
+                </div>
+
+              </td>
+
+
+              <!-- TYPE -->
+
+              <td>
+
+                @if (movement.type === 'IN') {
+
+                  <span class="type-badge in">
+                    ↓ IN
+                  </span>
+
+                } @else {
+
+                  <span class="type-badge out">
+                    ↑ OUT
+                  </span>
+
+                }
+
+              </td>
+
+
+              <!-- QUANTITY -->
+
+              <td>
+
+                <strong>
+                  {{ movement.quantity }}
+                </strong>
+
+              </td>
+
+
+              <!-- REASON -->
+
+              <td class="reason">
+
+                {{ movement.reason || '—' }}
+
+              </td>
+
+
+              <!-- DATE -->
+
+              <td>
+
+                <span class="date">
+
+                  {{
+                    movement.movementDate
+                      | date:'dd MMM yyyy, hh:mm a'
+                  }}
+
+                </span>
+
+              </td>
+
+
+              <!-- DELETE -->
+
+              <td>
+
+                <button
+                  type="button"
+                  class="delete-btn"
+                  (click)="deleteMovement(movement.id)"
+                >
+                  Delete
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- ADD MOVEMENT MODAL -->
+
+  @if (showForm) {
+
+    <div
+      class="modal-overlay"
+      (click)="closeForm()"
+    >
+
+      <div
+        class="modal"
+        (click)="$event.stopPropagation()"
+      >
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+          <div>
+
+            <h2>
+              Add Stock Movement
+            </h2>
+
+            <p>
+              Record an inventory stock movement
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="close-btn"
+            (click)="closeForm()"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <form
+          #movementForm="ngForm"
+          (ngSubmit)="addMovement()"
+        >
+
+
+          <!-- PRODUCT -->
+
+          <div class="form-group">
+
+            <label>
+
+              Product
+
+              <span>*</span>
+
+            </label>
+
+
+            <select
+              name="product"
+              [(ngModel)]="newMovement.product.id"
+              required
+            >
+
+              <option
+                [ngValue]="0"
+              >
+                Select Product
+              </option>
+
+
+              @for (
+                product of products;
+                track product.id
+              ) {
+
+                <option
+                  [ngValue]="product.id"
+                >
+                  {{ product.name }}
+                </option>
+
+              }
+
+            </select>
+
+          </div>
+
+
+          <!-- TYPE -->
+
+          <div class="form-group">
+
+            <label>
+
+              Movement Type
+
+              <span>*</span>
+
+            </label>
+
+
+            <div class="type-options">
+
+              <label
+                class="type-option"
+                [class.selected]="
+                  newMovement.type === 'IN'
+                "
+              >
+
+                <input
+                  type="radio"
+                  name="type"
+                  value="IN"
+                  [(ngModel)]="newMovement.type"
+                />
+
+                <span class="radio-content">
+
+                  <strong>
+                    ↓ Stock IN
+                  </strong>
+
+                  <small>
+                    Add stock
+                  </small>
+
+                </span>
+
+              </label>
+
+
+              <label
+                class="type-option"
+                [class.selected]="
+                  newMovement.type === 'OUT'
+                "
+              >
+
+                <input
+                  type="radio"
+                  name="type"
+                  value="OUT"
+                  [(ngModel)]="newMovement.type"
+                />
+
+                <span class="radio-content">
+
+                  <strong>
+                    ↑ Stock OUT
+                  </strong>
+
+                  <small>
+                    Remove stock
+                  </small>
+
+                </span>
+
+              </label>
+
+            </div>
+
+          </div>
+
+
+          <!-- QUANTITY -->
+
+          <div class="form-group">
+
+            <label>
+
+              Quantity
+
+              <span>*</span>
+
+            </label>
+
+
+            <input
+              type="number"
+              name="quantity"
+              [(ngModel)]="newMovement.quantity"
+              min="1"
+              placeholder="Enter quantity"
+              required
+            />
+
+          </div>
+
+
+          <!-- REASON -->
+
+          <div class="form-group">
+
+            <label>
+
+              Reason
+
+              <span>*</span>
+
+            </label>
+
+
+            <input
+              type="text"
+              name="reason"
+              [(ngModel)]="newMovement.reason"
+              placeholder="e.g. Purchase, Sale, Damaged"
+              required
+            />
+
+          </div>
+
+
+          <!-- DATE -->
+
+          <div class="form-group">
+
+            <label>
+
+              Movement Date
+
+            </label>
+
+
+            <input
+              type="datetime-local"
+              name="movementDate"
+              [(ngModel)]="newMovement.movementDate"
+            />
+
+          </div>
+
+
+          <!-- BUTTONS -->
+
+          <div class="form-actions">
+
+            <button
+              type="button"
+              class="cancel-btn"
+              (click)="closeForm()"
+            >
+              Cancel
+            </button>
+
+
+            <button
+              type="submit"
+              class="save-btn"
+              [disabled]="movementForm.invalid"
+            >
+              Add Movement
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

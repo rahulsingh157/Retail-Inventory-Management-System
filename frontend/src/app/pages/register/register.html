@@ -1,0 +1,85 @@
+<div class="auth-wrapper">
+
+  <div class="auth-card">
+
+    <div class="auth-header">
+      <div class="brand-logo">
+        <div class="logo-icon">R</div>
+        <div class="brand-text">
+          <h1>RIMS</h1>
+          <span>Retail Inventory Management System</span>
+        </div>
+      </div>
+      <h2>Create Account</h2>
+      <p>Register a new account to manage retail inventory</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert error-alert">
+      <span class="alert-icon">⚠️</span>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="auth-form">
+
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <div class="input-icon-wrapper">
+          <span class="input-icon">👤</span>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            [(ngModel)]="name"
+            placeholder="John Doe"
+            required
+            autocomplete="name"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-icon-wrapper">
+          <span class="input-icon">✉</span>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            [(ngModel)]="email"
+            placeholder="admin@rims.com"
+            required
+            autocomplete="email"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-icon-wrapper">
+          <span class="input-icon">🔒</span>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            [(ngModel)]="password"
+            placeholder="••••••••"
+            required
+            autocomplete="new-password"
+          />
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="loading">
+        <span *ngIf="!loading">Register Account</span>
+        <span *ngIf="loading" class="spinner-text">Creating Account...</span>
+      </button>
+
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a routerLink="/login">Sign in here</a></p>
+    </div>
+
+  </div>
+
+</div>

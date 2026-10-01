@@ -1,0 +1,233 @@
+<div class="order-items-page">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div>
+      <h1>Order Items</h1>
+      <p>Manage individual line items associated with sales orders</p>
+    </div>
+
+    <button type="button" class="add-btn" (click)="openForm()">
+      + Add Order Item
+    </button>
+  </div>
+
+
+  <!-- TOOLBAR & SEARCH -->
+  <div class="toolbar">
+    <div class="search-box">
+      <span>🔍</span>
+      <input
+        type="text"
+        placeholder="Search by product, order ID, or item ID..."
+        [(ngModel)]="searchText"
+      />
+    </div>
+
+    <div class="item-count">
+      {{ filteredOrderItems.length }} order items
+    </div>
+  </div>
+
+
+  <!-- ORDER ITEMS TABLE -->
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Order</th>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Unit Price</th>
+          <th>Item Total</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngIf="loading">
+          <td colspan="7" class="empty-cell">
+            <div class="loading-icon">⏳</div>
+            <strong>Loading order items...</strong>
+            <span>Please wait while we retrieve line items.</span>
+          </td>
+        </tr>
+
+        <tr *ngIf="!loading && filteredOrderItems.length === 0">
+          <td colspan="7" class="empty-cell">
+            <div class="empty-icon">📦</div>
+            <strong>No order items found</strong>
+            <span>Add line items to your sales orders.</span>
+          </td>
+        </tr>
+
+        <tr *ngFor="let item of filteredOrderItems">
+          <td>
+            <span class="id-badge">#{{ item.id }}</span>
+          </td>
+
+          <td>
+            <span class="order-badge">
+              Order #{{ item.order?.id || '—' }}
+            </span>
+          </td>
+
+          <td>
+            <div class="product-info">
+              <div class="product-avatar">
+                {{ (item.product?.name || 'P').charAt(0).toUpperCase() }}
+              </div>
+              <div>
+                <strong>{{ item.product?.name || 'Product #' + (item.product?.id || 'N/A') }}</strong>
+                <small *ngIf="item.product?.category">{{ item.product?.category }}</small>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <span class="quantity-badge">
+              {{ item.quantity }}
+            </span>
+          </td>
+
+          <td>
+            <span class="price-text">
+              ${{ item.price | number:'1.2-2' }}
+            </span>
+          </td>
+
+          <td>
+            <strong class="total-text">
+              ${{ getItemTotal(item) | number:'1.2-2' }}
+            </strong>
+          </td>
+
+          <td>
+            <button class="delete-btn" (click)="deleteOrderItem(item.id)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ADD ORDER ITEM MODAL -->
+  <div class="modal-overlay" *ngIf="showForm" (click)="closeForm()">
+    <div class="modal" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div>
+          <h2>Add Order Item</h2>
+          <p>Link a product to a sales order</p>
+        </div>
+        <button class="close-btn" (click)="closeForm()">×</button>
+      </div>
+
+      <form #itemForm="ngForm" (ngSubmit)="addOrderItem()">
+
+        <!-- SELECT ORDER -->
+        <div class="form-group">
+          <label for="orderSelect">
+            Sales Order <span>*</span>
+          </label>
+          <select
+            id="orderSelect"
+            name="orderId"
+            [(ngModel)]="newOrderItem.orderId"
+            required
+          >
+            <option [ngValue]="null" disabled>-- Select Sales Order --</option>
+            <option *ngFor="let order of orders" [ngValue]="order.id">
+              Order #{{ order.id }} - {{ order.customer?.name || 'Customer' }} (${{ order.totalAmount | number:'1.2-2' }})
+            </option>
+          </select>
+
+          <div *ngIf="orders.length === 0" class="field-hint">
+            ⚠️ No sales orders found. Create a Sales Order first in the Orders page.
+          </div>
+        </div>
+
+        <!-- SELECT PRODUCT -->
+        <div class="form-group">
+          <label for="productSelect">
+            Product <span>*</span>
+          </label>
+          <select
+            id="productSelect"
+            name="productId"
+            [(ngModel)]="newOrderItem.productId"
+            required
+          >
+            <option [ngValue]="null" disabled>-- Select Product --</option>
+            <option *ngFor="let product of products" [ngValue]="product.id">
+              {{ product.name }} (Category: {{ product.category || 'N/A' }})
+            </option>
+          </select>
+
+          <div *ngIf="products.length === 0" class="field-hint">
+            ⚠️ No products found. Add products in the Products page first.
+          </div>
+        </div>
+
+        <!-- QUANTITY -->
+        <div class="form-group">
+          <label for="quantity">
+            Quantity <span>*</span>
+          </label>
+          <input
+            type="number"
+            id="quantity"
+            name="quantity"
+            [(ngModel)]="newOrderItem.quantity"
+            min="1"
+            placeholder="e.g. 2"
+            required
+          />
+        </div>
+
+        <!-- PRICE -->
+        <div class="form-group">
+          <label for="price">
+            Unit Price ($) <span>*</span>
+          </label>
+          <input
+            type="number"
+            id="price"
+            name="price"
+            [(ngModel)]="newOrderItem.price"
+            min="0.01"
+            step="0.01"
+            placeholder="e.g. 49.99"
+            required
+          />
+        </div>
+
+        <!-- TOTAL CALCULATION PREVIEW -->
+        <div class="total-preview">
+          <span>Calculated Item Total:</span>
+          <strong>${{ calculatedTotal | number:'1.2-2' }}</strong>
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="closeForm()">
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="save-btn"
+            [disabled]="itemForm.invalid || !newOrderItem.orderId || !newOrderItem.productId || newOrderItem.quantity <= 0 || newOrderItem.price <= 0"
+          >
+            Add Order Item
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>

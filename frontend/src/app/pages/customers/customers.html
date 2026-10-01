@@ -1,0 +1,402 @@
+<div class="customers-page">
+
+  <!-- PAGE HEADER -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>Customers</h1>
+
+      <p>
+        Manage your customer information
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="add-btn"
+      (click)="openForm()"
+    >
+      + Add Customer
+    </button>
+
+  </div>
+
+
+  <!-- SEARCH -->
+
+  <div class="toolbar">
+
+    <div class="search-box">
+
+      <span>🔍</span>
+
+      <input
+        type="text"
+        placeholder="Search customers..."
+        [(ngModel)]="searchText"
+      />
+
+    </div>
+
+
+    <div class="customer-count">
+
+      {{ filteredCustomers.length }}
+
+      {{
+        filteredCustomers.length === 1
+          ? 'customer'
+          : 'customers'
+      }}
+
+    </div>
+
+  </div>
+
+
+  <!-- CUSTOMER TABLE -->
+
+  <div class="table-card">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>ID</th>
+
+          <th>Customer</th>
+
+          <th>Email</th>
+
+          <th>Phone</th>
+
+          <th>Address</th>
+
+          <th>Actions</th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        @if (loading) {
+
+          <tr>
+
+            <td
+              colspan="6"
+              class="empty-cell"
+            >
+
+              <div class="loading-icon">
+                ⏳
+              </div>
+
+              <strong>
+                Loading customers...
+              </strong>
+
+              <span>
+                Please wait while customers are loaded.
+              </span>
+
+            </td>
+
+          </tr>
+
+        }
+
+
+        @else if (filteredCustomers.length === 0) {
+
+          <tr>
+
+            <td
+              colspan="6"
+              class="empty-cell"
+            >
+
+              <div class="empty-icon">
+                👥
+              </div>
+
+              <strong>
+                No customers found
+              </strong>
+
+              <span>
+                Add your first customer to get started.
+              </span>
+
+            </td>
+
+          </tr>
+
+        }
+
+
+        @else {
+
+          @for (
+            customer of filteredCustomers;
+            track customer.id
+          ) {
+
+            <tr>
+
+              <!-- ID -->
+
+              <td>
+
+                <span class="id-badge">
+                  #{{ customer.id }}
+                </span>
+
+              </td>
+
+
+              <!-- CUSTOMER -->
+
+              <td>
+
+                <div class="customer-name">
+
+                  <div class="customer-avatar">
+                    {{ customer.name.charAt(0).toUpperCase() }}
+                  </div>
+
+                  <strong>
+                    {{ customer.name }}
+                  </strong>
+
+                </div>
+
+              </td>
+
+
+              <!-- EMAIL -->
+
+              <td>
+
+                <span class="email">
+                  {{ customer.email || '—' }}
+                </span>
+
+              </td>
+
+
+              <!-- PHONE -->
+
+              <td>
+
+                <span class="phone">
+                  {{ customer.phone || '—' }}
+                </span>
+
+              </td>
+
+
+              <!-- ADDRESS -->
+
+              <td class="address">
+
+                {{ customer.address || '—' }}
+
+              </td>
+
+
+              <!-- ACTION -->
+
+              <td>
+
+                <button
+                  type="button"
+                  class="delete-btn"
+                  (click)="deleteCustomer(customer.id)"
+                >
+                  Delete
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- ADD CUSTOMER MODAL -->
+
+  @if (showForm) {
+
+    <div
+      class="modal-overlay"
+      (click)="closeForm()"
+    >
+
+      <div
+        class="modal"
+        (click)="$event.stopPropagation()"
+      >
+
+        <!-- MODAL HEADER -->
+
+        <div class="modal-header">
+
+          <div>
+
+            <h2>
+              Add New Customer
+            </h2>
+
+            <p>
+              Enter customer information
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="close-btn"
+            (click)="closeForm()"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <form
+          #customerForm="ngForm"
+          (ngSubmit)="addCustomer()"
+        >
+
+          <!-- NAME -->
+
+          <div class="form-group">
+
+            <label>
+
+              Customer Name
+
+              <span>*</span>
+
+            </label>
+
+            <input
+              type="text"
+              name="name"
+              [(ngModel)]="newCustomer.name"
+              placeholder="Enter customer name"
+              required
+            />
+
+          </div>
+
+
+          <!-- EMAIL + PHONE -->
+
+          <div class="form-row">
+
+            <div class="form-group">
+
+              <label>
+                Email
+              </label>
+
+              <input
+                type="email"
+                name="email"
+                [(ngModel)]="newCustomer.email"
+                placeholder="customer@example.com"
+              />
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Phone
+              </label>
+
+              <input
+                type="tel"
+                name="phone"
+                [(ngModel)]="newCustomer.phone"
+                placeholder="9876543210"
+              />
+
+            </div>
+
+          </div>
+
+
+          <!-- ADDRESS -->
+
+          <div class="form-group">
+
+            <label>
+              Address
+            </label>
+
+            <textarea
+              name="address"
+              [(ngModel)]="newCustomer.address"
+              placeholder="Enter customer address"
+              rows="3"
+            ></textarea>
+
+          </div>
+
+
+          <!-- BUTTONS -->
+
+          <div class="form-actions">
+
+            <button
+              type="button"
+              class="cancel-btn"
+              (click)="closeForm()"
+            >
+              Cancel
+            </button>
+
+
+            <button
+              type="submit"
+              class="save-btn"
+              [disabled]="customerForm.invalid"
+            >
+              Add Customer
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

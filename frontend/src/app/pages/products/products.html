@@ -1,0 +1,346 @@
+<div class="products-page">
+
+  <!-- PAGE HEADER -->
+
+  <div class="page-header">
+
+    <div>
+      <h1>Products</h1>
+      <p>Manage your inventory products</p>
+    </div>
+
+    <button
+        type="button"
+        class="add-btn"
+        (click)="openForm()"
+        >
+        + Add Product
+    </button>
+
+  </div>
+
+
+  <!-- SEARCH -->
+
+  <div class="toolbar">
+
+    <div class="search-box">
+
+      <span>🔍</span>
+
+      <input
+        type="text"
+        placeholder="Search products..."
+        [(ngModel)]="searchText"
+      />
+
+    </div>
+
+    <div class="product-count">
+      {{ filteredProducts.length }} products
+    </div>
+
+  </div>
+
+
+  <!-- PRODUCTS TABLE -->
+
+  <div class="table-card">
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>ID</th>
+          <th>Product</th>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Quantity</th>
+          <th>Actions</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        @if (loading) {
+
+            <tr>
+
+                <td
+                colspan="6"
+                class="empty-cell"
+                >
+
+                <div class="loading-icon">
+                    ⏳
+                </div>
+
+                <strong>Loading products...</strong>
+
+                <span>
+                    Please wait while we load your inventory.
+                </span>
+
+                </td>
+
+            </tr>
+
+            } @else if (filteredProducts.length === 0) {
+
+            <tr>
+
+                <td
+                colspan="6"
+                class="empty-cell"
+                >
+
+                <div class="empty-icon">
+                    📦
+                </div>
+
+                <strong>No products found</strong>
+
+                <span>
+                    Add your first product to get started.
+                </span>
+
+                </td>
+
+            </tr>
+
+            } @else {
+
+          @for (
+            product of filteredProducts;
+            track product.id
+          ) {
+
+            <tr>
+
+              <td>
+                <span class="id-badge">
+                  #{{ product.id }}
+                </span>
+              </td>
+
+
+              <td>
+
+                <div class="product-name">
+
+                  <div class="product-avatar">
+                    {{ product.name.charAt(0).toUpperCase() }}
+                  </div>
+
+                  <strong>
+                    {{ product.name }}
+                  </strong>
+
+                </div>
+
+              </td>
+
+
+              <td class="description">
+                {{ product.description || '—' }}
+              </td>
+
+
+              <td>
+
+                <span class="category-badge">
+                  {{ product.category }}
+                </span>
+
+              </td>
+
+
+              <td>
+
+                @if (product.quantity <= 5) {
+
+                  <span class="quantity low">
+                    {{ product.quantity }}
+                  </span>
+
+                } @else {
+
+                  <span class="quantity">
+                    {{ product.quantity }}
+                  </span>
+
+                }
+
+              </td>
+
+
+              <td>
+
+                <button
+                  class="delete-btn"
+                  (click)="deleteProduct(product.id)"
+                >
+                  Delete
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- ADD PRODUCT MODAL -->
+
+  @if (showForm) {
+
+    <div
+      class="modal-overlay"
+      (click)="closeForm()"
+    >
+
+      <div
+        class="modal"
+        (click)="$event.stopPropagation()"
+      >
+
+        <div class="modal-header">
+
+          <div>
+            <h2>Add New Product</h2>
+            <p>Enter product information</p>
+          </div>
+
+          <button
+            class="close-btn"
+            (click)="closeForm()"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <form
+          #productForm="ngForm"
+          (ngSubmit)="addProduct()"
+        >
+
+          <!-- NAME -->
+
+          <div class="form-group">
+
+            <label>
+              Product Name
+              <span>*</span>
+            </label>
+
+            <input
+              type="text"
+              name="name"
+              [(ngModel)]="newProduct.name"
+              placeholder="Enter product name"
+              required
+            />
+
+          </div>
+
+
+          <!-- DESCRIPTION -->
+
+          <div class="form-group">
+
+            <label>
+              Description
+            </label>
+
+            <textarea
+              name="description"
+              [(ngModel)]="newProduct.description"
+              placeholder="Enter product description"
+              rows="3"
+            ></textarea>
+
+          </div>
+
+
+          <!-- CATEGORY -->
+
+          <div class="form-group">
+
+            <label>
+              Category
+              <span>*</span>
+            </label>
+
+            <input
+              type="text"
+              name="category"
+              [(ngModel)]="newProduct.category"
+              placeholder="e.g. Electronics"
+              required
+            />
+
+          </div>
+
+
+          <!-- QUANTITY -->
+
+          <div class="form-group">
+
+            <label>
+              Quantity
+            </label>
+
+            <input
+              type="number"
+              name="quantity"
+              [(ngModel)]="newProduct.quantity"
+              min="0"
+              placeholder="Enter quantity"
+            />
+
+          </div>
+
+
+          <!-- BUTTONS -->
+
+          <div class="form-actions">
+
+            <button
+              type="button"
+              class="cancel-btn"
+              (click)="closeForm()"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              class="save-btn"
+              [disabled]="productForm.invalid"
+            >
+              Add Product
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

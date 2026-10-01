@@ -1,0 +1,342 @@
+<div class="categories-page">
+
+  <!-- PAGE HEADER -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>Categories</h1>
+
+      <p>
+        Organize your products into categories
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="add-btn"
+      (click)="openForm()"
+    >
+      + Add Category
+    </button>
+
+  </div>
+
+
+  <!-- SEARCH BAR -->
+
+  <div class="toolbar">
+
+    <div class="search-box">
+
+      <span>🔍</span>
+
+      <input
+        type="text"
+        placeholder="Search categories..."
+        [(ngModel)]="searchText"
+      />
+
+    </div>
+
+
+    <div class="category-count">
+
+      {{ filteredCategories.length }}
+
+      {{
+        filteredCategories.length === 1
+          ? 'category'
+          : 'categories'
+      }}
+
+    </div>
+
+  </div>
+
+
+  <!-- CATEGORY TABLE -->
+
+  <div class="table-card">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>ID</th>
+
+          <th>Category</th>
+
+          <th>Description</th>
+
+          <th>Actions</th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        @if (loading) {
+
+          <tr>
+
+            <td
+              colspan="4"
+              class="empty-cell"
+            >
+
+              <div class="loading-icon">
+                ⏳
+              </div>
+
+              <strong>
+                Loading categories...
+              </strong>
+
+              <span>
+                Please wait while categories are loaded.
+              </span>
+
+            </td>
+
+          </tr>
+
+        }
+
+
+        @else if (filteredCategories.length === 0) {
+
+          <tr>
+
+            <td
+              colspan="4"
+              class="empty-cell"
+            >
+
+              <div class="empty-icon">
+                🗂️
+              </div>
+
+              <strong>
+                No categories found
+              </strong>
+
+              <span>
+                Add your first category to get started.
+              </span>
+
+            </td>
+
+          </tr>
+
+        }
+
+
+        @else {
+
+          @for (
+            category of filteredCategories;
+            track category.id
+          ) {
+
+            <tr>
+
+              <!-- ID -->
+
+              <td>
+
+                <span class="id-badge">
+                  #{{ category.id }}
+                </span>
+
+              </td>
+
+
+              <!-- CATEGORY -->
+
+              <td>
+
+                <div class="category-name">
+
+                  <div class="category-avatar">
+                    {{ category.name.charAt(0).toUpperCase() }}
+                  </div>
+
+                  <strong>
+                    {{ category.name }}
+                  </strong>
+
+                </div>
+
+              </td>
+
+
+              <!-- DESCRIPTION -->
+
+              <td class="description">
+
+                {{ category.description || '—' }}
+
+              </td>
+
+
+              <!-- ACTIONS -->
+
+              <td>
+
+                <button
+                  type="button"
+                  class="delete-btn"
+                  (click)="deleteCategory(category.id)"
+                >
+                  Delete
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- ADD CATEGORY MODAL -->
+
+  @if (showForm) {
+
+    <div
+      class="modal-overlay"
+      (click)="closeForm()"
+    >
+
+      <div
+        class="modal"
+        (click)="$event.stopPropagation()"
+      >
+
+
+        <!-- MODAL HEADER -->
+
+        <div class="modal-header">
+
+          <div>
+
+            <h2>
+              Add New Category
+            </h2>
+
+            <p>
+              Enter category information
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="close-btn"
+            (click)="closeForm()"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <form
+          #categoryForm="ngForm"
+          (ngSubmit)="addCategory()"
+        >
+
+
+          <!-- NAME -->
+
+          <div class="form-group">
+
+            <label>
+
+              Category Name
+
+              <span>*</span>
+
+            </label>
+
+
+            <input
+              type="text"
+              name="name"
+              [(ngModel)]="newCategory.name"
+              placeholder="e.g. Electronics"
+              required
+            />
+
+          </div>
+
+
+          <!-- DESCRIPTION -->
+
+          <div class="form-group">
+
+            <label>
+              Description
+            </label>
+
+
+            <textarea
+              name="description"
+              [(ngModel)]="newCategory.description"
+              placeholder="Enter category description"
+              rows="4"
+            ></textarea>
+
+          </div>
+
+
+          <!-- BUTTONS -->
+
+          <div class="form-actions">
+
+            <button
+              type="button"
+              class="cancel-btn"
+              (click)="closeForm()"
+            >
+              Cancel
+            </button>
+
+
+            <button
+              type="submit"
+              class="save-btn"
+              [disabled]="categoryForm.invalid"
+            >
+              Add Category
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

@@ -1,0 +1,166 @@
+<div class="app-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <div class="logo">
+      <div class="logo-icon">R</div>
+
+      <div>
+        <h2>RIMS</h2>
+        <span>Inventory System</span>
+      </div>
+    </div>
+
+    <div class="menu-title">
+      MAIN MENU
+    </div>
+
+    <nav>
+
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }">
+
+        <span class="icon">⌂</span>
+        <span>Dashboard</span>
+
+      </a>
+
+      <a
+        routerLink="/products"
+        routerLinkActive="active">
+
+        <span class="icon">▣</span>
+        <span>Products</span>
+
+      </a>
+
+      <a
+        routerLink="/categories"
+        routerLinkActive="active">
+
+        <span class="icon">▦</span>
+        <span>Categories</span>
+
+      </a>
+
+      <a
+        routerLink="/suppliers"
+        routerLinkActive="active">
+
+        <span class="icon">♙</span>
+        <span>Suppliers</span>
+
+      </a>
+
+      <a
+        routerLink="/customers"
+        routerLinkActive="active">
+
+        <span class="icon">♙</span>
+        <span>Customers</span>
+
+      </a>
+
+      <a
+        routerLink="/stock-movements"
+        routerLinkActive="active">
+
+        <span class="icon">↕</span>
+        <span>Stock Movements</span>
+
+      </a>
+
+      <div class="menu-title second">
+        SALES
+      </div>
+
+      <a
+        routerLink="/orders"
+        routerLinkActive="active">
+
+        <span class="icon">▤</span>
+        <span>Sales Orders</span>
+
+      </a>
+
+      <a
+        routerLink="/order-items"
+        routerLinkActive="active">
+
+        <span class="icon">☷</span>
+        <span>Order Items</span>
+
+      </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+      <div class="user">
+
+        <div class="avatar">
+          {{ userInitial }}
+        </div>
+
+        <div>
+          <strong>{{ currentUser?.name || 'User' }}</strong>
+          <small>{{ currentUser?.email || 'Authenticated User' }}</small>
+        </div>
+
+      </div>
+
+      <button (click)="logout()" class="sidebar-logout-btn" title="Logout">
+        <span>🚪</span>
+        <span>Logout</span>
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <header class="topbar">
+
+      <div>
+        <h3>Retail Inventory Management</h3>
+        <p>Manage your inventory efficiently</p>
+      </div>
+
+      <div class="topbar-right">
+
+        <button class="notification" title="Notifications">
+          🔔
+        </button>
+
+        <div class="profile">
+          <div class="avatar">
+            {{ userInitial }}
+          </div>
+
+          <span>{{ currentUser?.name || 'User' }}</span>
+        </div>
+
+        <button (click)="logout()" class="logout-btn" title="Logout">
+          <span>🚪 Logout</span>
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <section class="content">
+
+      <router-outlet></router-outlet>
+
+    </section>
+
+  </main>
+
+</div>
